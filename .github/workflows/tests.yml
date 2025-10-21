@@ -10,6 +10,15 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend Tests (Python ${{ matrix.python-version }})
+    env:
+      POSTGRES_DB: "testdb"
+      POSTGRES_USER: "testuser"
+      POSTGRES_PASSWORD: "testpass"
+      POSTGRES_HOST: "localhost"
+      PORT: "5432"
+      JWT_KEY: "testsecret"
+      APP_PORT: "5001"
+      APP_HOST: "127.0.0.1"
     
     strategy:
       matrix:
@@ -48,6 +57,12 @@ jobs:
   frontend-tests:
     runs-on: ubuntu-latest
     name: Frontend Tests (Python ${{ matrix.python-version }})
+    env:
+      SECRET_KEY: "testsecret"
+      BACKEND_HOSTNAME: "localhost"
+      BACKEND_PORT: "5001"
+      APP_PORT: "8001"
+      APP_HOST: "127.0.0.1"
     
     strategy:
       matrix:
