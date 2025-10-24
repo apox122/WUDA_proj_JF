@@ -159,10 +159,10 @@ jobs:
         with:
           context: ./back-end
           push: true
-          tags: ghcr.io/${{ github.repository }}/backend:latest
+          tags: ghcr.io/${{ toLowerCase(github.repository) }}/backend:latest
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/frontend:latest
+          tags: ghcr.io/${{ toLowerCase(github.repository) }}/frontend:latest
