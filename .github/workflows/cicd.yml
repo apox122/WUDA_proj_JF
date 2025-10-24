@@ -133,36 +133,38 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
   build-and-push-images:
-    name: Build and Push Docker Images
-    needs: [backend-tests, frontend-tests, codeql]
-    runs-on: ubuntu-latest
+      name: Build and Push Docker Images
+      needs: [backend-tests, frontend-tests, pylint, codeql]
+      runs-on: ubuntu-latest
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      permissions:
+        contents: read
+        packages: write
 
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-    permissions:
-      contents: read
-      packages: write
+        - name: Set repo name to lowercase
+          run: echo "REPO_NAME_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        - name: Log in to GitHub Container Registry
+          uses: docker/login-action@v2
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        - name: Build and push backend image
+          uses: docker/build-push-action@v4
+          with:
+            context: ./back-end
+            push: true
+            tags: ghcr.io/${{ env.REPO_NAME_LOWER }}/backend:latest
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./back-end
-          push: true
-          tags: ghcr.io/${{ toLowerCase(github.repository) }}/backend:latest
-
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: ghcr.io/${{ toLowerCase(github.repository) }}/frontend:latest
+        - name: Build and push frontend image
+          uses: docker/build-push-action@v4
+          with:
+            context: ./front-end
+            push: true
+            tags: ghcr.io/${{ env.REPO_NAME_LOWER }}/frontend:latest
