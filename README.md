@@ -65,11 +65,30 @@ SERVER_PORT=8000
 ```
 
 3. Run app by following command:
-
-
 ```bash
 python3 app.py
 ```
+
+
+## 🌐 Full app setup with docker
+1. Create .env file in root directory (next to docker-compose.yaml)
+```.env
+POSTGRES_DB=games
+POSTGRES_USER=board_games
+POSTGRES_PASSWORD=alamakota
+
+JWT_KEY=9ffb6562bd4f10d4cb4e9594a63b059699c94b1dbdae2bc8b3330b6dfa702919
+SECRET_KEY=9ffb6562bd4f10d4cb4e9594a63b059699c94b1dbdae2bc8b3330b6dfa702919
+
+APP_PORT=5000
+SERVER_PORT=8000
+BACKEND_PORT=5000
+```
+2. Run Docker Compose
+```bash
+docker-compose up --build -d 
+```
+
 
 ## Database setup
 Required is postgresql. Either run given docker-compose.yaml file or provide setup for backend's `.env` file
