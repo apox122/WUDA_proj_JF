@@ -73,12 +73,12 @@ python3 app.py
 ## 🌐 Full app setup with docker
 1. Create .env file in root directory (next to docker-compose.yaml)
 ```.env
-POSTGRES_DB=games
-POSTGRES_USER=board_games
-POSTGRES_PASSWORD=alamakota
+POSTGRES_DB=#####
+POSTGRES_USER=#####
+POSTGRES_PASSWORD=#####
 
-JWT_KEY=9ffb6562bd4f10d4cb4e9594a63b059699c94b1dbdae2bc8b3330b6dfa702919
-SECRET_KEY=9ffb6562bd4f10d4cb4e9594a63b059699c94b1dbdae2bc8b3330b6dfa702919
+JWT_KEY=#####
+SECRET_KEY=#####
 
 APP_PORT=5000
 SERVER_PORT=8000
