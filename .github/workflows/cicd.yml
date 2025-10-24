@@ -134,7 +134,7 @@ jobs:
         category: "/language:${{matrix.language}}"
   build-and-push-images:
       name: Build and Push Docker Images
-      needs: [backend-tests, frontend-tests, pylint, codeql]
+      needs: [backend-tests, frontend-tests, codeql]
       runs-on: ubuntu-latest
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       permissions:
