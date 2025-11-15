@@ -1,0 +1,40 @@
+appName: wudaprojjf
+namespace: klawon-frydrych
+
+backend:
+  replicaCount: 1
+  image: 
+    repository: ghcr.io/apox122/wuda_proj_jf/backend
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 5000
+  env:
+    jwtKey: your-jwt-secret
+  
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/apox122/wuda_proj_jf/frontend
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 8000
+  env:
+    backend:
+      port: 5000
+    secretKey: your-secret-key
+
+postgres:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 5432
+  env:
+    db: games
+    user: board_games
+    password: alamakota

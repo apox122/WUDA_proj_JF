@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-frontend
+  labels:
+    app: {{ .Values.appName }}-frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.frontend.service.port }}
+        env:
+        - name: BACKEND_HOSTNAME
+          value: "{{ .Values.appName }}-backend"
+        - name: BACKEND_PORT
+          value: "{{ .Values.backend.service.port }}"
+        - name: SECRET_KEY
+          value: "{{ .Values.frontend.env.secretKey }}"
+        - name: APP_PORT
+          value: "{{ .Values.frontend.service.port }}"
+        - name: APP_HOST
+          value: "0.0.0.0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}-frontend
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}-frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: {{ .Values.appName }}-frontend
+  ports:
+  - protocol: TCP
+    port: {{ .Values.frontend.service.port }} 
+    targetPort: {{ .Values.frontend.service.port }}
