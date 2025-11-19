@@ -20,6 +20,19 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: {{ .Values.backend.service.port }}
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: {{ .Values.backend.service.port}}
+          initialDelaySeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: {{ .Values.backend.service.port}}
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          failureThreshold: 3
         env:
         - name: POSTGRES_DB
           value: "{{ .Values.postgres.env.db }}"
@@ -29,7 +42,7 @@ spec:
           value: "{{ .Values.postgres.env.password }}"
         - name: POSTGRES_HOST
           value: "{{ .Values.appName }}-postgres"
-        - name: PORT
+        - name: DB_PORT
           value: "{{ .Values.postgres.service.port }}"
         - name: JWT_KEY
           value: "{{ .Values.backend.env.jwtKey }}"

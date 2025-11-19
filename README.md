@@ -28,7 +28,7 @@ POSTGRES_PASSWORD=your_database_password
 POSTGRES_HOST=localhost
 
 # Optional: PostgreSQL port (default is 5432)
-PORT=5432
+DB_PORT=5432
 
 # Secret key for JWT
 JWT_KEY=your_secret_jwt_key

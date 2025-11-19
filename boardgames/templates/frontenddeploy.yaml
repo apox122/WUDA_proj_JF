@@ -20,6 +20,17 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: {{ .Values.frontend.service.port }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.frontend.service.port}}
+          initialDelaySeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.frontend.service.port}}
+            path: /
+          initialDelaySeconds: 10
+          periodSeconds: 20
         env:
         - name: BACKEND_HOSTNAME
           value: "{{ .Values.appName }}-backend"
