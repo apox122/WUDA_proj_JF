@@ -34,6 +34,10 @@ spec:
           periodSeconds: 20
           failureThreshold: 3
         env:
+        - name: FLASK_RUN_HOST
+          value: "0.0.0.0"
+        - name: FLASK_APP
+          value: "app.py"
         - name: POSTGRES_DB
           value: "{{ .Values.postgres.env.db }}"
         - name: POSTGRES_USER
@@ -62,7 +66,7 @@ spec:
   type: LoadBalancer
   selector:
     app: {{ .Values.appName }}-backend
-    tier: backend
+{{/*    tier: backend*/}}
   ports:
   - protocol: TCP
     port: {{ .Values.backend.service.port }}

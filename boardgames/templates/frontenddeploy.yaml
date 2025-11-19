@@ -23,14 +23,15 @@ spec:
         livenessProbe:
           tcpSocket:
             port: {{ .Values.frontend.service.port}}
-          initialDelaySeconds: 10
-          periodSeconds: 20
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 5
         readinessProbe:
-          httpGet:
+          tcpSocket:
             port: {{ .Values.frontend.service.port}}
-            path: /
-          initialDelaySeconds: 10
-          periodSeconds: 20
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 5
         env:
         - name: BACKEND_HOSTNAME
           value: "{{ .Values.appName }}-backend"
