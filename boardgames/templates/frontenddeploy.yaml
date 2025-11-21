@@ -34,15 +34,27 @@ spec:
           failureThreshold: 5
         env:
         - name: BACKEND_HOSTNAME
-          value: "{{ .Values.appName }}-backend"
+          valueFrom:
+            configMapKeyRef:
+              key: backend-hostname
+              name: {{.Values.appName}}-config
         - name: BACKEND_PORT
-          value: "{{ .Values.backend.service.port }}"
+          valueFrom:
+            configMapKeyRef:
+              key: backend-port
+              name: {{.Values.appName}}-config
         - name: SECRET_KEY
-          value: "{{ .Values.frontend.env.secretKey }}"
+          valueFrom:
+            secretKeyRef:
+              key: flask-secret-key
+              name: {{.Values.appName}}-secrets
         - name: APP_PORT
           value: "{{ .Values.frontend.service.port }}"
         - name: APP_HOST
-          value: "0.0.0.0"
+          valueFrom:
+            configMapKeyRef:
+              key: app-host
+              name: {{.Values.appName}}-config
 ---
 apiVersion: v1
 kind: Service

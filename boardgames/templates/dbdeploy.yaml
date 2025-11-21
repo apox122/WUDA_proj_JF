@@ -23,11 +23,20 @@ spec:
         - containerPort: {{ .Values.postgres.service.port }}
         env:
         - name: POSTGRES_DB
-          value: "{{ .Values.postgres.env.db }}"
+          valueFrom:
+            configMapKeyRef:
+              key: postgres-db
+              name: {{.Values.appName}}-config
         - name: POSTGRES_USER
-          value: "{{ .Values.postgres.env.user }}"
+          valueFrom:
+            configMapKeyRef:
+              key: postgres-user
+              name: {{.Values.appName}}-config
         - name: POSTGRES_PASSWORD
-          value: "{{ .Values.postgres.env.password }}"
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: {{.Values.appName}}-secrets
 ---
 apiVersion: v1
 kind: Service

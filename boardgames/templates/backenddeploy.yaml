@@ -14,6 +14,21 @@ spec:
       labels:
         app: {{ .Values.appName }}-backend
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nc -z -v -w30 $(POSTGRES_HOST) $(DB_PORT); do echo 'Waiting for database connection...'; sleep 2; done" ]
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.appName }}-config
+                  key: postgres-host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.appName }}-config
+                  key: postgres-port
       containers:
       - name: backend
         image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
@@ -35,21 +50,42 @@ spec:
           failureThreshold: 3
         env:
         - name: FLASK_RUN_HOST
-          value: "0.0.0.0"
+          valueFrom:
+            configMapKeyRef:
+              key: app-host
+              name: {{.Values.appName}}-config
         - name: FLASK_APP
           value: "app.py"
-        - name: POSTGRES_DB
-          value: "{{ .Values.postgres.env.db }}"
-        - name: POSTGRES_USER
-          value: "{{ .Values.postgres.env.user }}"
         - name: POSTGRES_PASSWORD
-          value: "{{ .Values.postgres.env.password }}"
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: {{.Values.appName}}-secrets
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.appName }}-config
+              key: postgres-db
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.appName }}-config
+              key: postgres-user
         - name: POSTGRES_HOST
-          value: "{{ .Values.appName }}-postgres"
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.appName }}-config
+              key: postgres-host
         - name: DB_PORT
-          value: "{{ .Values.postgres.service.port }}"
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.appName }}-config
+              key: postgres-port
         - name: JWT_KEY
-          value: "{{ .Values.backend.env.jwtKey }}"
+          valueFrom:
+            secretKeyRef:
+              key: jwt-key
+              name: {{.Values.appName}}-secrets
         - name: APP_PORT
           value: "{{ .Values.backend.service.port }}"
         - name: APP_HOST
