@@ -31,6 +31,7 @@ Install NGINX
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 ```
+IMPORTANT -> Wait until nginx is installed, 60-90 seconds
 
 ## IMPORTANT set up dns for remote access on the cluster
 1. Run notepad as administrator
